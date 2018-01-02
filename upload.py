@@ -61,7 +61,7 @@ if __name__ == '__main__':
 #for hashing using md5.
 
 @app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
+def uploaded_file():
     if request.method == 'POST':
         file = request.files['file']
         #next line causes exception
