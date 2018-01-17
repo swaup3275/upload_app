@@ -1,9 +1,10 @@
 import os
 from flask import Flask, request, redirect, url_for
+from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = '/path/to/the/uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'doc'])
+UPLOAD_FOLDER = 'path/uploads'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'docx'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -28,45 +29,72 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file',
+            return redirect(url_for('upload_file',
                                     filename=filename))
-    return
+    return render_template('upload.html')
 
 
 '''
+#see the imports from the previous file.
 
-#just for ref...
+'''
 
 
-from flask import Flask, render_template, request
-from werkzeug import secure_filename
-app = Flask(__name__)
+app.config['ELASTICSEARCH_URL'] = 'http://localhost:9200/'
+app.config['DEBUG'] = True
+es = Elasticsearch([app.config['ELASTICSEARCH_URL']])
 
-@app.route('/upload')
-def upload_file():
-   return render_template('upload.html')
-	
-@app.route('/uploader', methods = ['GET', 'POST'])
-def upload_file():
-   if request.method == 'POST':
-      f = request.files['file']
-      f.save(secure_filename(f.filename))
-      return 'file uploaded successfully'
-		
+'''@app.route("/")
+def home():
+    return render_template('index.html')'''
+
+@app.route('/insert')
+
+    es.indices.delete(index="resume_trials", ignore=404)
+    es.indices.create(index="resume_trials", ignore=400)
+
+    #i am not able to figure out the txt,docx,pdf to json format while storing.
+
+    id = 0
+    for resume in resumes:
+        id += 1
+        #req = urllib2.Request(resumes[1])
+        #res = urllib2.urlopen(req)
+
+        data = {
+          "name": resumes[0],
+          "address": resumes[1],
+          "skills": res.read()
+        }
+        es.index(index="resume_trials",doc_type="resume",id=id,body=data)
+    es.indices.refresh(index="resume_trials")
+    return render_template('index.html')
+
+
+
+@app.route('/search', methods=['POST'])
+def search():
+    search_term = request.form['search']
+    #res = es.search(index="resume_trials", body={"query": {"match_all": {}}})
+    try:
+        res = es.search(index="resume_trials", size=100, body={"query": {"multi_match" : { "query": search_term, "fields": ["name", "skills","address"] }}})
+        return render_template('results.html', res=res, term=search_term)
+    except:
+        return render_template('other.html', res="ERROR: Can't find any ElasticSearch servers.")
+
+@app.route('/search/<search_term>', methods=['GET'])
+def search_history(search_term):
+    try:
+        res = es.search(index="resume_trials", size=100, body={"query": {"multi_match" : { "query": search_term, "fields": ["name", "address","skills"] }}})
+        return render_template('results.html', res=res, term=search_term)
+    except:
+        return render_template('other.html', res="ERROR: Can't find any ElasticSearch servers.")
+
+'''
+    
+
+
 if __name__ == '__main__':
-   app.run(debug = True)
-
-'''
-
-#for hashing using md5.
-
-@app.route('/upload', methods=['GET', 'POST'])
-def uploaded_file():
-    if request.method == 'POST':
-        file = request.files['file']
-        #next line causes exception
-        img_key = hashlib.md5(file.read()).hexdigest() 
-
-
-
+    app.run(debug=True)
+    
 
