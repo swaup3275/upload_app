@@ -59,12 +59,6 @@ app.config['DEBUG'] = True
 es = Elasticsearch([app.config['ELASTICSEARCH_URL']])
 
 '''
-@app.route("/")
-def home():
-    return render_template('index.html')
-    '''
-
-'''
 @app.route('/insert')
 
 #es.indices.delete(index="resume_trials", ignore=404)
