@@ -4,6 +4,7 @@ import json
 from flask import Flask, request, redirect, url_for
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
+from elasticsearch import Elasticsearch
 
 UPLOAD_FOLDER = 'path/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'docx'])
@@ -47,23 +48,31 @@ text = textract.process('path/uploads/resumeswarup.pdf', extension='pdf')
 #see the imports from the previous file.
 
 
+'''
+
+data=text
+json_data = json.dumps(data)
 
 
 app.config['ELASTICSEARCH_URL'] = 'http://localhost:9200/'
 app.config['DEBUG'] = True
 es = Elasticsearch([app.config['ELASTICSEARCH_URL']])
 
+'''
 @app.route("/")
 def home():
     return render_template('index.html')
+    '''
 
+'''
 @app.route('/insert')
 
-    es.indices.delete(index="resume_trials", ignore=404)
-    es.indices.create(index="resume_trials", ignore=400)
+#es.indices.delete(index="resume_trials", ignore=404)
+es.indices.create(index="resume_trials", ignore=400)
 
     #i am not able to figure out the conversion txt,docx,pdf to json format while storing.
 
+    
     id = 0
     for resume in resumes:
         id += 1
@@ -75,20 +84,28 @@ def home():
           "address": resumes[1],
           "skills": res.read()
         }
+        
         es.index(index="resume_trials",doc_type="resume",id=id,body=data)
     es.indices.refresh(index="resume_trials")
     return render_template('index.html')
-
-
-data = 
-{
-    "name":text
-       }
-json_data = json.dumps(data)
+    '''
 
 
 
+#es = elasticsearch.Elasticsearch()  # use default of localhost, port 9200
+es.index(index='resume_trials', doc_type='resumes', id=1, body={
 
+    'education':'json_data.Education'
+
+    })
+
+#es.get(index='resume_trials', doc_type='resumes', id=1)
+
+
+#es.search(index='resume_trials', q='name:"swarup"')
+
+
+'''
 @app.route('/search', methods=['POST'])
 def search():
     search_term = request.form['search']
@@ -98,6 +115,8 @@ def search():
         return render_template('results.html', res=res, term=search_term)
     except:
         return render_template('other.html', res="ERROR: Can't find any ElasticSearch servers.")
+
+
 
 @app.route('/search/<search_term>', methods=['GET'])
 def search_history(search_term):
