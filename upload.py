@@ -1,4 +1,5 @@
 import os
+import textract
 from flask import Flask, request, redirect, url_for
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
@@ -33,27 +34,34 @@ def upload_file():
                                     filename=filename))
     return render_template('upload.html')
 
+#import textract
+text = textract.process('path/uploads/resumeswarup.pdf', extension='pdf')
+
+#similarly for docx and txt
+
+#print text
+
 
 '''
 #see the imports from the previous file.
 
-'''
+
 
 
 app.config['ELASTICSEARCH_URL'] = 'http://localhost:9200/'
 app.config['DEBUG'] = True
 es = Elasticsearch([app.config['ELASTICSEARCH_URL']])
 
-'''@app.route("/")
+@app.route("/")
 def home():
-    return render_template('index.html')'''
+    return render_template('index.html')
 
 @app.route('/insert')
 
     es.indices.delete(index="resume_trials", ignore=404)
     es.indices.create(index="resume_trials", ignore=400)
 
-    #i am not able to figure out the txt,docx,pdf to json format while storing.
+    #i am not able to figure out the conversion txt,docx,pdf to json format while storing.
 
     id = 0
     for resume in resumes:
