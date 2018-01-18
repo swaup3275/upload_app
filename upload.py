@@ -79,6 +79,14 @@ def home():
     return render_template('index.html')
 
 
+data = 
+{
+    "name":text
+       }
+json_data = json.dumps(data)
+
+
+
 
 @app.route('/search', methods=['POST'])
 def search():
