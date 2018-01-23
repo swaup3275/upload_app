@@ -62,37 +62,6 @@ app.config['ELASTICSEARCH_URL'] = 'http://localhost:9200/'
 app.config['DEBUG'] = True
 es = Elasticsearch([app.config['ELASTICSEARCH_URL']])
 
-
- 
-
-'''
-@app.route('/insert')
-
-#es.indices.delete(index="resume_trials", ignore=404)
-es.indices.create(index="resume_trials", ignore=400)
-
-    #i am not able to figure out the conversion txt,docx,pdf to json format while storing.
-
-    
-    id = 0
-    for resume in resumes:
-        id += 1
-        #req = urllib2.Request(resumes[1])
-        #res = urllib2.urlopen(req)
-
-        data = {
-          "name": resumes[0],
-          "address": resumes[1],
-          "skills": res.read()
-        }
-        
-        es.index(index="resume_trials",doc_type="resume",id=id,body=data)
-    es.indices.refresh(index="resume_trials")
-    return render_template('index.html')
-    
-
-'''
-
 #es = elasticsearch.Elasticsearch() 
 #es=Elasticsearch() 
 
@@ -142,8 +111,9 @@ while True:
         '''
 
 
-res = es.search(index="resume_trials", body={"query": {"match": {'text':'Jira'}}})
-print("Got %d Hits:" % res['hits']['total'])
+res = es.search(index="resume_trials", body={"query": {"match": {'text':'automate'}}})
+#print("Got %d Hits:" % res['hits']['total'])
+print res
 
 
 #es.search(index="resume_trials", body={"query": {"match": {'text':'Jira'}}})
