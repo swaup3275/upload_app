@@ -75,10 +75,12 @@ def upload_file():
 
         file.save(path/uploads/file.extension)
         new_file = File(url=os.path.abspath(path/uploads/file.extension))
-        db.session.add(new_file)
-        db.session.commit()
+         #db.session.add(new_file)
+         #db.session.commit()
 
-
+        resume = Result('new_file') # 1
+        db.session.add(resume)        # 2
+        db.session.commit()  
         #extracting the files...
         '''
 
