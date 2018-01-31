@@ -65,18 +65,10 @@ def upload_file():
         json_data = json.dumps(data)
 
         #result4=Result('')
+        
         '''
-
-        url = request.files['url']
-
-        if url:
-            filename = secure_filename(url.filename)
-            url_path = os.path.join(app.config['UPLOAD_FOLDER']+"resume/", filename)
-            url.save(url_path)
-            results.boxart = url_path
-
-        db.session.add(results)
-        db.session.commit()
+         try that 4th thing from so.
+       
         '''
         
 
