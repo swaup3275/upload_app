@@ -78,8 +78,11 @@ def upload_file():
          #db.session.add(new_file)
          #db.session.commit()
 
-        resume = Result('new_file') # 1
-        db.session.add(resume)        # 2
+        #url = Result('new_file') # 1
+        file_path=basedir+filename
+        print file_path
+        result=Result(file_path)
+        db.session.add(result)        
         db.session.commit()  
         
         '''
