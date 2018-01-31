@@ -58,7 +58,7 @@ def upload_file():
 
         #similarly for docx and txt
         #way=os.path.abspath("path/uploads/file.extension")
-        basedir = os.path.abspath(os.path.dirname(__file__))
+        basedir = os.path.abspath('path/uploads/file.extension')
         print basedir
         #print text
         data=text
@@ -73,14 +73,14 @@ def upload_file():
 
        #trying this stack overflow...
 
-        file.save(path/uploads/file.extension)
-        new_file = File(url=os.path.abspath(path/uploads/file.extension))
+        file.save('path/uploads/file.extension')
+        new_file = File(url=os.path.abspath('path/uploads/file.extension'))
          #db.session.add(new_file)
          #db.session.commit()
 
         #url = Result('new_file') # 1
         file_path=basedir+filename
-        
+        print file_path
         result=Result(file_path)
         db.session.add(result)        
         db.session.commit()  
