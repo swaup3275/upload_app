@@ -81,7 +81,7 @@ def upload_file():
         resume = Result('new_file') # 1
         db.session.add(resume)        # 2
         db.session.commit()  
-        #extracting the files...
+        
         '''
 
         File.query.filter_by(name="see_this_later").all() #a list of all File objects with that name
