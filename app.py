@@ -7,7 +7,7 @@ from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from elasticsearch import Elasticsearch
 from flask.ext.sqlalchemy import SQLAlchemy
-
+import models
 
 
 app = Flask(__name__)
@@ -67,16 +67,7 @@ def upload_file():
         #result4=Result('')
         '''
 
-        url = request.files['url']
-
-        if url:
-            filename = secure_filename(url.filename)
-            url_path = os.path.join(app.config['UPLOAD_FOLDER']+"resume/", filename)
-            url.save(url_path)
-            results.boxart = url_path
-
-        db.session.add(results)
-        db.session.commit()
+    
         '''
         
 
