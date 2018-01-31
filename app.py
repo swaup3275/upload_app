@@ -65,17 +65,25 @@ def upload_file():
         json_data = json.dumps(data)
 
         #result4=Result('')
-        
         '''
-         try that 4th thing from so.
-       
+
+        url = request.files['url']
+
+        if url:
+            filename = secure_filename(url.filename)
+            url_path = os.path.join(app.config['UPLOAD_FOLDER']+"resume/", filename)
+            url.save(url_path)
+            results.boxart = url_path
+
+        db.session.add(results)
+        db.session.commit()
         '''
         
 
        #trying this stack overflow...
 
-        file.save(path/uploads)
-        new_file = File(name=filename, fp=os.path.abspath(path/uploads))
+        file.save(path/uploads/file.extension)
+        new_file = File(url=os.path.abspath(path/uploads/file.extension))
         db.session.add(new_file)
         db.session.commit()
 
@@ -87,7 +95,7 @@ def upload_file():
         '''
 
 
-        
+
 # commit the changes
         
         app.config['ELASTICSEARCH_URL'] = 'http://localhost:9200/'
