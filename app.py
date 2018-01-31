@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 import textract
 import json
@@ -6,6 +7,7 @@ from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from elasticsearch import Elasticsearch
 from flask.ext.sqlalchemy import SQLAlchemy
+
 
 
 app = Flask(__name__)
@@ -46,102 +48,142 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('upload_file',
                                     filename=filename))
-    return render_template('upload.html')
+    
 
 #import textract
-text = textract.process('path/uploads/AKASH_SHARMA.pdf', extension='pdf')
 
-#similarly for docx and txt
+        #text = textract.process('path/uploads', extension='pdf')
+        text = textract.process('path/uploads/file.extension')
+        print text
 
-#print text
-data=text
-json_data = json.dumps(data)
+        #similarly for docx and txt
+        #way=os.path.abspath("path/uploads/file.extension")
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        print basedir
+        #print text
+        data=text
+        json_data = json.dumps(data)
 
+        #result4=Result('')
+        '''
 
-app.config['ELASTICSEARCH_URL'] = 'http://localhost:9200/'
-app.config['DEBUG'] = True
-es = Elasticsearch([app.config['ELASTICSEARCH_URL']])
+        url = request.files['url']
 
-#es = elasticsearch.Elasticsearch() 
-#es=Elasticsearch() 
+        if url:
+            filename = secure_filename(url.filename)
+            url_path = os.path.join(app.config['UPLOAD_FOLDER']+"resume/", filename)
+            url.save(url_path)
+            results.boxart = url_path
 
+        db.session.add(results)
+        db.session.commit()
+        '''
+        
 
- # use default of localhost, port 9200
+       #trying this stack overflow...
 
-
-es.indices.create(index="resume_trials", ignore=400)
-
-es.index(index="resume_trials", doc_type='resumes', id=id, body={"text":json_data})
-#print(res['created'])
-
-
-
-'''
-
-es.index(index='resume_trials', doc_type='resumes', id=1, body=json_data)
-
-
-'''
-es.get(index="resume_trials", doc_type='resumes',id=id)
-#print(res['_source'])
-
-#es.search(index='resume_trials', q='in')
-
-'''
-res = es.search(index="resume_trials", doc_type="resumes", body={"query": {"match": {"text": "in"}}})
-print("%d documents found" % res['hits']['total'])
-for doc in res['hits']['hits']:
-    print("%s) %s" % (doc['_id'], doc['_source']['text']))
-    '''
-
-#i=i+1
+        file.save(path/uploads)
+        new_file = File(name=filename, fp=os.path.abspath(path/uploads))
+        db.session.add(new_file)
+        db.session.commit()
 
 
-'''
-while True:
-    try:
-        query = input("Enter a search: ")
-        result = es.search(index=resume_trials, doc_type=resumes, body={"query": {"match": {"text": query.strip()}}})
-        if result.get('hits') is not None and result['hits'].get('hits') is not None:
-            print(result['hits']['hits'])
-        else:
-            print({})
-    except(KeyboardInterrupt):
-        break
+        #extracting the files...
+        '''
+
+        File.query.filter_by(name="see_this_later").all() #a list of all File objects with that name
         '''
 
 
-res = es.search(index="resume_trials", body={"query": {"match": {'text':'automate'}}})
-#print("Got %d Hits:" % res['hits']['total'])
-print res
+        
+# commit the changes
+        
+        app.config['ELASTICSEARCH_URL'] = 'http://localhost:9200/'
+        app.config['DEBUG'] = True
+        es = Elasticsearch([app.config['ELASTICSEARCH_URL']])
+
+        #es = elasticsearch.Elasticsearch() 
+        #es=Elasticsearch() 
 
 
-#es.search(index="resume_trials", body={"query": {"match": {'text':'Jira'}}})
+         # use default of localhost, port 9200
 
 
-'''
-@app.route('/search', methods=['POST'])
-def search():
-    search_term = request.form['search']
-    #res = es.search(index="resume_trials", body={"query": {"match_all": {}}})
-    try:
-        res = es.search(index="resume_trials", size=100, body={"query": {"multi_match" : { "query": search_term, "fields": ["name", "skills","address"] }}})
-        return render_template('results.html', res=res, term=search_term)
-    except:
-        return render_template('other.html', res="ERROR: Can't find any ElasticSearch servers.")
+        es.indices.create(index="resume_trials", ignore=400)
+
+        es.index(index="resume_trials", doc_type='resumes', id=id, body={"text":json_data})
+        #print(res['created'])
 
 
 
-@app.route('/search/<search_term>', methods=['GET'])
-def search_history(search_term):
-    try:
-        res = es.search(index="resume_trials", size=100, body={"query": {"multi_match" : { "query": search_term, "fields": ["name", "address","skills"] }}})
-        return render_template('results.html', res=res, term=search_term)
-    except:
-        return render_template('other.html', res="ERROR: Can't find any ElasticSearch servers.")
 
-  
-'''
+
+        es.index(index='resume_trials', doc_type='resumes', id=1, body=json_data)
+
+
+
+        es.get(index="resume_trials", doc_type='resumes',id=id)
+        #print(res['_source'])
+
+        #es.search(index='resume_trials', q='in')
+
+        '''
+        res = es.search(index="resume_trials", doc_type="resumes", body={"query": {"match": {"text": "in"}}})
+        print("%d documents found" % res['hits']['total'])
+        for doc in res['hits']['hits']:
+            print("%s) %s" % (doc['_id'], doc['_source']['text']))
+            
+
+        #i=i+1
+
+
+
+        while True:
+            try:
+                query = input("Enter a search: ")
+                result = es.search(index=resume_trials, doc_type=resumes, body={"query": {"match": {"text": query.strip()}}})
+                if result.get('hits') is not None and result['hits'].get('hits') is not None:
+                    print(result['hits']['hits'])
+                else:
+                    print({})
+            except(KeyboardInterrupt):
+                break
+                
+        '''
+
+        res = es.search(index="resume_trials", body={"query": {"match": {'text':'Akash'}}})
+        #print("Got %d Hits:" % res['hits']['total'])
+        print res
+
+
+        #es.search(index="resume_trials", body={"query": {"match": {'text':'Jira'}}})
+
+        '''
+
+        @app.route('/search', methods=['POST'])
+        def search():
+            search_term = request.form['search']
+            #res = es.search(index="resume_trials", body={"query": {"match_all": {}}})
+            try:
+                res = es.search(index="resume_trials", size=100, body={"query": {"multi_match" : { "query": search_term, "fields": ["name", "skills","address"] }}})
+                return render_template('results.html', res=res, term=search_term)
+            except:
+                return render_template('other.html', res="ERROR: Can't find any ElasticSearch servers.")
+
+
+
+        @app.route('/search/<search_term>', methods=['GET'])
+        def search_history(search_term):
+            try:
+                res = es.search(index="resume_trials", size=100, body={"query": {"multi_match" : { "query": search_term, "fields": ["name", "address","skills"] }}})
+                return render_template('results.html', res=res, term=search_term)
+            except:
+                return render_template('other.html', res="ERROR: Can't find any ElasticSearch servers.")
+
+          
+        '''
+
+    return render_template('upload.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
