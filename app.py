@@ -7,7 +7,9 @@ from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from elasticsearch import Elasticsearch
 from flask.ext.sqlalchemy import SQLAlchemy
-import models
+from sqlalchemy.dialects.postgresql import JSON
+import os.path
+
 
 
 app = Flask(__name__)
@@ -16,7 +18,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///resume_store"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-
+from app import db
+'''
+from models import Result
+'''
 from models import *
 
 
@@ -52,6 +57,21 @@ def upload_file():
 
 #import textract
 
+        class Result(db.Model):
+            __tablename__ = 'resumetablew'
+
+            id= db.Column(db.Integer, primary_key=True)
+    
+            url = db.Column(db.String())
+    
+
+            def __init__(self, url):
+                self.url = url
+        
+
+            def __repr__(self):
+                return '<id {}>'.format(self.id)
+
         #text = textract.process('path/uploads', extension='pdf')
         text = textract.process('path/uploads/file.extension')
         print text
@@ -63,7 +83,7 @@ def upload_file():
         #print text
         data=text
         json_data = json.dumps(data)
-
+        
         #result4=Result('')
         '''
 
@@ -73,6 +93,8 @@ def upload_file():
 
        #trying this stack overflow...
 
+        
+
         file.save('path/uploads/file.extension')
         new_file = File(url=os.path.abspath('path/uploads/file.extension'))
          #db.session.add(new_file)
@@ -81,9 +103,15 @@ def upload_file():
         #url = Result('new_file') # 1
         file_path=basedir+filename
         print file_path
-        result=Result(file_path)
+        '''
+        result=Result(url=file_path)
         db.session.add(result)        
-        db.session.commit()  
+        db.session.commit() 
+         
+        checki=Result(file_path)
+        '''
+        
+        
         
         '''
 
@@ -114,7 +142,7 @@ def upload_file():
 
 
 
-        es.index(index='resume_trials', doc_type='resumes', id=1, body=json_data)
+        es.index(index='resume_trials', doc_type='resumes', id=id, body=json_data)
 
 
 
@@ -180,6 +208,17 @@ def upload_file():
         '''
 
     return render_template('upload.html')
+
+
+
+basedir = os.path.abspath('path/uploads/AJITKUMAR3_2.pdf')
+print basedir
+reslt=Result(basedir)
+db.session.add(reslt)        
+db.session.commit()
+
+        
+
 
 if __name__ == '__main__':
     app.run(debug=True)
