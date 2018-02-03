@@ -9,8 +9,7 @@ from elasticsearch import Elasticsearch
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSON
 import os.path
-
-
+import models
 
 app = Flask(__name__)
 #app.config.from_object(os.environ['APP_SETTINGS'])
@@ -57,70 +56,66 @@ def upload_file():
 
 #import textract
 
-        class Result(db.Model):
-            __tablename__ = 'resumetablew'
-
-            id= db.Column(db.Integer, primary_key=True)
-    
-            url = db.Column(db.String())
-    
-
-            def __init__(self, url):
-                self.url = url
-        
-
-            def __repr__(self):
-                return '<id {}>'.format(self.id)
+        file = request.FILES['file']
+        print file.name           # Gives name as we have the object file
+        print file.content_type   # Gives Content type text/html etc
+        print file.size 
 
         #text = textract.process('path/uploads', extension='pdf')
-        text = textract.process('path/uploads/file.extension')
-        print text
+        
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        #os.path.join(dir_name, base_filename + "." + filename_suffix)
+        extension = file.split(".").lower()[-1]
+        text = textract.process(os.path.join(basedir,file.filename + "." + extension))
+        
 
         #similarly for docx and txt
         #way=os.path.abspath("path/uploads/file.extension")
-        basedir = os.path.abspath('path/uploads/file.extension')
-        print basedir
+        
+        print text
         #print text
         data=text
         json_data = json.dumps(data)
         
         #result4=Result('')
-        '''
+       
 
-    
-        '''
+
+        
         
 
        #trying this stack overflow...
 
         
-
-        file.save('path/uploads/file.extension')
-        new_file = File(url=os.path.abspath('path/uploads/file.extension'))
+        '''
+        file.save(os.path.join(basedir, file.name + suffix))
+        new_file = File(url=os.path.abspath(os.path.join(basedir, file.name + suffix)))
+        '''
          #db.session.add(new_file)
          #db.session.commit()
 
         #url = Result('new_file') # 1
-        file_path=basedir+filename
-        print file_path
+        
         '''
-        result=Result(url=file_path)
-        db.session.add(result)        
+        result=Result('os.path.join(basedir,file.filename + "." + extension')
+        db.session.add(str(result))        
         db.session.commit() 
-         
-        checki=Result(file_path)
         '''
         
         
-        
+        result=Result('hell')
+        db.session.add(result)      
+        db.session.commit()
+
         '''
 
         File.query.filter_by(name="see_this_later").all() #a list of all File objects with that name
+
         '''
 
 
 
-# commit the changes
+    # commit the changes
         
         app.config['ELASTICSEARCH_URL'] = 'http://localhost:9200/'
         app.config['DEBUG'] = True
@@ -207,17 +202,20 @@ def upload_file():
           
         '''
 
-    return render_template('upload.html')
+        return render_template('upload.html')
 
 
+    '''
+
+    
 
 basedir = os.path.abspath('path/uploads/AJITKUMAR3_2.pdf')
 print basedir
 reslt=Result(basedir)
-db.session.add(reslt)        
+db.session.add(reslt)       
 db.session.commit()
+'''
 
-        
 
 
 if __name__ == '__main__':
