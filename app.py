@@ -100,7 +100,7 @@ def upload_file():
         '''
         
         
-        result=Result(str(path_file))
+        result=Result(path_file)
         db.session.add(result)      
         db.session.commit()
 
