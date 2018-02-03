@@ -66,7 +66,8 @@ def upload_file():
         basedir = os.path.abspath(os.path.dirname(__file__))
         #os.path.join(dir_name, base_filename + "." + filename_suffix)
         extension = file.split(".").lower()[-1]
-        text = textract.process(os.path.join(basedir,file.filename + "." + extension))
+        path_file=os.path.join(basedir,file.filename + "." + extension)
+        text = textract.process(path_file)
         
 
         #similarly for docx and txt
@@ -79,10 +80,6 @@ def upload_file():
         
         #result4=Result('')
        
-
-
-        
-        
 
        #trying this stack overflow...
 
@@ -103,7 +100,7 @@ def upload_file():
         '''
         
         
-        result=Result('hell')
+        result=Result(str(path_file))
         db.session.add(result)      
         db.session.commit()
 
@@ -170,7 +167,7 @@ def upload_file():
                 
         '''
 
-        res = es.search(index="resume_trials", body={"query": {"match": {'text':'Akash'}}})
+        res = es.search(index="resume_trials", body={"query": {"match": {'text':'text_to_be_searched'}}})
         #print("Got %d Hits:" % res['hits']['total'])
         print res
 
@@ -207,7 +204,7 @@ def upload_file():
 
     '''
 
-    
+
 
 basedir = os.path.abspath('path/uploads/AJITKUMAR3_2.pdf')
 print basedir
